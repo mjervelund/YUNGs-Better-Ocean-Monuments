@@ -20,7 +20,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
  */
 
 
-public class WaterlogProcessor extends StructureProcessor {
+public class WaterlogProcessor implements StructureProcessor {
     public static final WaterlogProcessor INSTANCE = new WaterlogProcessor();
     public static final MapCodec<WaterlogProcessor> CODEC = MapCodec.unit(() -> INSTANCE);
 
@@ -28,14 +28,14 @@ public class WaterlogProcessor extends StructureProcessor {
     public StructureTemplate.StructureBlockInfo processBlock(LevelReader levelReader,
                                                              BlockPos jigsawPiecePos,
                                                              BlockPos jigsawPieceBottomCenterPos,
-                                                             StructureTemplate.StructureBlockInfo blockInfoLocal,
+                                                             BlockPos blockPosLocal,
                                                              StructureTemplate.StructureBlockInfo blockInfoGlobal,
                                                              StructurePlaceSettings structurePlacementData) {
         // Schedule fluid ticks for water blocks along chunk boundaries
         if (blockInfoGlobal.state().liquid() && blockInfoGlobal.pos().getY() < levelReader.getSeaLevel()) {
             if (levelReader instanceof WorldGenRegion worldGenRegion && worldGenRegion.getCenter().equals(ChunkPos.containing(blockInfoGlobal.pos()))) {
                 if (blockInfoGlobal.pos().getX() % 16 == 0 || blockInfoGlobal.pos().getX() % 16 == 15 || blockInfoGlobal.pos().getZ() % 16 == 0 || blockInfoGlobal.pos().getZ() % 16 == 15) {
-                    levelReader.getChunk(blockInfoGlobal.pos()).markPosForPostprocessing(blockInfoGlobal.pos());
+                    levelReader.getChunk(blockInfoGlobal.pos()).markPosForPostProcessing(blockInfoGlobal.pos());
                 }
             }
         }
@@ -50,7 +50,8 @@ public class WaterlogProcessor extends StructureProcessor {
         return blockInfoGlobal;
     }
 
-    protected StructureProcessorType<?> getType() {
+    @Override
+    public MapCodec<? extends StructureProcessor> codec() {
         return StructureProcessorTypeModule.WATERLOG_PROCESSOR;
     }
 }

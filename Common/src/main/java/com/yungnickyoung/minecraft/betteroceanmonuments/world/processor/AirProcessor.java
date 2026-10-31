@@ -18,7 +18,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
  */
 
 
-public class AirProcessor extends StructureProcessor {
+public class AirProcessor implements StructureProcessor {
     public static final AirProcessor INSTANCE = new AirProcessor();
     public static final MapCodec<AirProcessor> CODEC = MapCodec.unit(() -> INSTANCE);
 
@@ -26,7 +26,7 @@ public class AirProcessor extends StructureProcessor {
     public StructureTemplate.StructureBlockInfo processBlock(LevelReader levelReader,
                                                              BlockPos jigsawPiecePos,
                                                              BlockPos jigsawPieceBottomCenterPos,
-                                                             StructureTemplate.StructureBlockInfo blockInfoLocal,
+                                                             BlockPos blockPosLocal,
                                                              StructureTemplate.StructureBlockInfo blockInfoGlobal,
                                                              StructurePlaceSettings structurePlacementData) {
         if (blockInfoGlobal.state().getBlock() == Blocks.AIR) {
@@ -38,7 +38,8 @@ public class AirProcessor extends StructureProcessor {
         return blockInfoGlobal;
     }
 
-    protected StructureProcessorType<?> getType() {
+    @Override
+    public MapCodec<? extends StructureProcessor> codec() {
         return StructureProcessorTypeModule.AIR_PROCESSOR;
     }
 }

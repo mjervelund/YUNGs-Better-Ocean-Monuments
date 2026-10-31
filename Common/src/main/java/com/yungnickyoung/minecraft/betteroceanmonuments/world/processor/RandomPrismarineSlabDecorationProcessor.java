@@ -22,7 +22,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
  */
 
 
-public class RandomPrismarineSlabDecorationProcessor extends StructureProcessor {
+public class RandomPrismarineSlabDecorationProcessor implements StructureProcessor {
     public static final RandomPrismarineSlabDecorationProcessor INSTANCE = new RandomPrismarineSlabDecorationProcessor();
     public static final MapCodec<RandomPrismarineSlabDecorationProcessor> CODEC = MapCodec.unit(() -> INSTANCE);
 
@@ -30,10 +30,10 @@ public class RandomPrismarineSlabDecorationProcessor extends StructureProcessor 
     public StructureTemplate.StructureBlockInfo processBlock(LevelReader levelReader,
                                                              BlockPos jigsawPiecePos,
                                                              BlockPos jigsawPieceBottomCenterPos,
-                                                             StructureTemplate.StructureBlockInfo blockInfoLocal,
+                                                             BlockPos blockPosLocal,
                                                              StructureTemplate.StructureBlockInfo blockInfoGlobal,
                                                              StructurePlaceSettings structurePlacementData) {
-        if (blockInfoGlobal.state().getBlock() == Blocks.LIME_CONCRETE) {
+        if (blockInfoGlobal.state().getBlock() == Blocks.CONCRETE.lime()) {
             RandomSource random = structurePlacementData.getRandom(blockInfoGlobal.pos());
             BlockState blockState;
             if (random.nextFloat() < .4f) {
@@ -48,7 +48,8 @@ public class RandomPrismarineSlabDecorationProcessor extends StructureProcessor 
         return blockInfoGlobal;
     }
 
-    protected StructureProcessorType<?> getType() {
+    @Override
+    public MapCodec<? extends StructureProcessor> codec() {
         return StructureProcessorTypeModule.RANDOM_PRISMARINE_SLAB_DECORATION_PROCESSOR;
     }
 }
